@@ -28,7 +28,7 @@
 
    ![图示](https://raw.githubusercontent.com/TUT123456/Cpdaily_Submit/main/docs/imgs/secret.png)
 5. **运行结果将在每天15点左右通过微信的server酱通知给您**  
-   ![图示](https://github.com/TUT123456/Cpdaily_Submit/docs/imgs/result.jpg)
+   ![图示](https://raw.githubusercontent.com/TUT123456/Cpdaily_Submit/main/docs/imgs/result.jpg)
 
 ## 其他
    - 本脚本根据 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit) 云函数代码修改而来，所以原项目中能用云函数实现签到的情况在这里应该适用。
