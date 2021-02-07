@@ -16,7 +16,7 @@
 4. **获取sckey，推送每日运行结果**  
    1. 前往 [sc.ftqq.com](http://sc.ftqq.com/3.version) 点击登入，创建账号（建议使用 GitHub 登录）。
    2. 点击[发送消息](http://sc.ftqq.com/?c=code) ，生成一个 Key。之后会将其增加到 Github Secrets 中，变量名为 `sckey`
-   3. [绑定微信账号](http://sc.ftqq.com/?c=wechat&a=bind) ，开启微信推送。  ![图示]()
+   3. [绑定微信账号](http://sc.ftqq.com/?c=wechat&a=bind) ，开启微信推送。
 5. **点击项目 Settings -> Secrets -> New repository secrets 逐个添加以下 Secrets，其中server酱微信推送的sckey可见上一步**  
    |Name|Value|
    |-----|-----|
@@ -26,7 +26,7 @@
    | school | 学校 |
    | sckey | server酱推送的sckey |  
 
-   ![图示](https://github.com/TUT123456/Cpdaily_Submit/docs/imgs/secret.png)
+   ![图示](https://raw.githubusercontent.com/TUT123456/Cpdaily_Submit/main/docs/imgs/secret.png)
 5. **运行结果将在每天15点左右通过微信的server酱通知给您**  
    ![图示](https://github.com/TUT123456/Cpdaily_Submit/docs/imgs/result.jpg)
 
