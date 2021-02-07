@@ -45,7 +45,7 @@ def getCpdailyApis(user):
                 'ids': one['id']
             }
             res = requests.get(url='https://mobile.campushoy.com/v6/config/guest/tenant/info', params=params,
-                               vy=not debug)
+                               verify=not debug)
             data = res.json()['data'][0]
             joinType = data['joinType']
             idsUrl = data['idsUrl']
