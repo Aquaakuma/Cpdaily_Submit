@@ -11,8 +11,8 @@
 1. **在右上角Fork本项目**  
 2. **启用Actions**
 3. **编辑要提交的问题**
-   根据个人情况修改 config.yml 中的内容。
-   如果不懂如何配置请用 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit) 项目中的 generate.py 生成一个配置文件。
+   - 根据个人情况修改 config.yml 中的内容。
+   - 如果不懂如何配置请用 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit) 项目中的 generate.py 生成一个配置文件。
 4. **获取sckey，推送每日运行结果**  
    1. 前往 [sc.ftqq.com](http://sc.ftqq.com/3.version) 点击登入，创建账号（建议使用 GitHub 登录）。
    2. 点击[发送消息](http://sc.ftqq.com/?c=code) ，生成一个 Key。之后会将其增加到 Github Secrets 中，变量名为 `sckey`
