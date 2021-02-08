@@ -4,6 +4,12 @@
 name: Python application
 
 on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   schedule:
     # 每天北京时间8点执行，第二个0代表小时，以此类推，如：9点——'0 1 * * *''
     - cron: '30 0 * * *'
@@ -34,7 +40,7 @@ jobs:
         school: ${{ secrets.school }}
         # 配置推送信息
         # ServerChan
-        sckey: ${{ secrets.serverchan_sckey }}
+        sckey: ${{ secrets.sckey }}
 
       run: |
         python ./index.py 
