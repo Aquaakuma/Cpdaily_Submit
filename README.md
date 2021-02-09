@@ -4,12 +4,12 @@
 
 ## 前提条件
 - [x] Github账号
-- [x] Server酱的SCKEY
+- [x] Server酱的SCKEY(可选)
 
 ## 使用说明
 
 1. **在右上角Fork本项目**  
-2. **启用Actions**
+2. **启用Actions，fork仓库不会立即执行action，需手动执行一次 Run workflow**
 3. **编辑要提交的问题**
    - 根据个人情况修改 config.yml 中的内容。
    - 如果不懂如何配置请用 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit) 项目中的 generate.py 生成一个配置文件。
