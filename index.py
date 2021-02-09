@@ -268,7 +268,7 @@ def submitForm(formWid, address, collectWid, schoolTaskWid, form, session, host)
 def sendServerChan(msg, sckey):
     log('正在发送Server酱。。。')
     res = requests.post(url='https://sctapi.ftqq.com/{0}.send'.format(sckey),
-                            data={'title': '今日校园疫情提交结果通知', 'desp': getTimeStr() + "\n" + str(msg)})
+                            data={'title': '今日校园疫情上报结果通知', 'desp': getTimeStr() + "\n" + str(msg)})
     code = res.json()['data']['error']
     if code == 'SUCCESS':
         log('发送Server酱通知成功。。。')

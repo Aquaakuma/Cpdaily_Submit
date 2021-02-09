@@ -30,7 +30,7 @@
 
    ![图示](https://raw.githubusercontent.com/TUT123456/Cpdaily_Submit/main/docs/imgs/secret.png)
 6. **修改 [`.github/workflows/python_auto.yml`](https://github.com/TUT123456/Cpdaily_Submit/blob/77c5810562005bde2dba37306deb99ad057d6d17/.github/workflows/python_auto.yml#L21) 21行 Environment 的值为上一步创建的环境名**
-   如果有多用户要求，可以为每个用户都创建一个 Environment Secret，再为用户创建一份 workflow，修改第21行的值为环境名即可。
+   如果有多用户要求，可以为每个用户都创建一个 Environment Secret，然后在 workflow 添加一个 environment 值不同的job。
 7. **运行结果将在每天15点左右通过微信的server酱通知给您**  
    ![图示](https://raw.githubusercontent.com/TUT123456/Cpdaily_Submit/main/docs/imgs/result.jpg)
 
