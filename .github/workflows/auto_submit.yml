@@ -6,10 +6,10 @@ name: Python application
 on:
   push:
     branches:
-      - Multi-user
+      - main
   pull_request:
     branches:
-      - Multi-user
+      - main
   schedule:
     # 每天北京时间8点执行，第二个0代表小时，以此类推，如：9点——'0 1 * * *''
     - cron: '30 0 * * *'
