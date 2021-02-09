@@ -18,6 +18,7 @@ jobs:
   submit:
 
     runs-on: ubuntu-latest
+    environment: TUT
 
     steps:
     - uses: actions/checkout@v2
@@ -41,6 +42,8 @@ jobs:
         # 配置推送信息
         # ServerChan
         sckey: ${{ secrets.sckey }}
+        # 使用的config.yml
+        config: ${{secrets.config}}
 
       run: |
-        python ./index.py 
+        python ./index.py config
