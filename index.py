@@ -17,16 +17,12 @@ if debug:
 
 
 # 读取yml配置
-def getYmlConfig(yaml_file='config.yml'):
+def getYmlConfig(yaml_file):
     file = open(yaml_file, 'r', encoding="utf-8")
     file_data = file.read()
     file.close()
     config = yaml.load(file_data, Loader=yaml.FullLoader)
     return dict(config)
-
-
-# 全局配置
-config = getYmlConfig(yaml_file='config.yml')
 
 
 # 获取今日校园api
@@ -90,7 +86,7 @@ def log(content):
 
 
 # 登陆并返回session
-def getSession(user, loginUrl):
+def getSession(user, loginUrl, config):
     params = {
         'login_url': loginUrl,
         # 保证学工号和密码正确下面两项就不需要配置
@@ -159,7 +155,7 @@ def queryForm(session, apis):
 
 
 # 填写form
-def fillForm(session, form, host):
+def fillForm(session, form, host, config):
     sort = 1
     for formItem in form[:]:
         # 只处理必填项
@@ -267,16 +263,14 @@ def submitForm(formWid, address, collectWid, schoolTaskWid, form, session, host)
     msg = r.json()['message']
     return msg
 
-title_text = '今日校园疫结果通知'
-
 
 # server酱通知
 def sendServerChan(msg, sckey):
     log('正在发送Server酱。。。')
-    res = requests.post(url='https://sc.ftqq.com/{0}.send'.format(sckey),
-                            data={'text': title_text, 'desp': getTimeStr() + "\n" + str(msg)})
-    code = res.json()['errmsg']
-    if code == 'success':
+    res = requests.post(url='https://sctapi.ftqq.com/{0}.send'.format(sckey),
+                            data={'title': '今日校园疫情上报结果通知', 'desp': getTimeStr() + "\n" + str(msg)})
+    code = res.json()['data']['error']
+    if code == 'SUCCESS':
         log('发送Server酱通知成功。。。')
     else:
         log('发送Server酱通知失败。。。')
@@ -288,16 +282,16 @@ def InfoSubmit(msg, sckey):
     if(sckey): sendServerChan(msg, sckey)
 
 
-def main_handler(event, context):
+def main_handler(user, yml_file):
     try:
         # 设置环境变量
-        user = os.environ
+        config = getYmlConfig(yml_file)
         # 开始登录
         log('当前用户：' + str(user['username']))
         apis = getCpdailyApis(user)
         log('脚本开始执行。。。')
         log('开始模拟登陆。。。')
-        session = getSession(user, apis['login-url'])
+        session = getSession(user, apis['login-url'], config)
         if session != None:
             log('模拟登陆成功。。。')
             log('正在查询最新待填写问卷。。。')
@@ -308,7 +302,7 @@ def main_handler(event, context):
                 exit(-1)
             log('查询最新待填写问卷成功。。。')
             log('正在自动填写问卷。。。')
-            form = fillForm(session, params['form'], apis['host'])
+            form = fillForm(session, params['form'], apis['host'], config)
             log('填写问卷成功。。。')
             log('正在自动提交。。。')
             msg = submitForm(params['formWid'], user['address'], params['collectWid'],
@@ -330,7 +324,6 @@ def main_handler(event, context):
             log('原因可能是学号或密码错误，请检查配置后，重启脚本。。。')
             exit(-1)
     except Exception as e:
-        user = os.environ
         InfoSubmit("出现问题了！"+str(e), user['sckey'])
         raise e
     else:
@@ -339,6 +332,8 @@ def main_handler(event, context):
 
 # 配合Windows计划任务等使用
 if __name__ == '__main__':
-    print(main_handler({}, {}))
+    user = os.environ
+    config_file=sys.argv[1]
+    print(main_handler(user, config_file))
     # for user in config['users']:
     #     log(getCpdailyApis(user))
