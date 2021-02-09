@@ -46,4 +46,5 @@ jobs:
         config: ${{secrets.config}}
 
       run: |
-        python ./index.py config
+        echo "正在使用配置文件：$config"
+        python ./index.py $config
