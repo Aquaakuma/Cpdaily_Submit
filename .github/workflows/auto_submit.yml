@@ -53,7 +53,7 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: Liao # 此处填入环境名
-    needs: submit_user2
+    needs: submit_user1
 
     steps:
     - uses: actions/checkout@v2
