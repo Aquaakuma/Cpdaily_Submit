@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 from datetime import datetime, timedelta, timezone
 from urllib3.exceptions import InsecureRequestWarning
 import os
+from retrying import retry
 
 
 # debug模式
@@ -85,6 +86,12 @@ def log(content):
     sys.stdout.flush()
 
 
+def retry_if_session_none(session):
+    print("没有获取到cookies，10秒后再次重试。。。")
+    return session is None
+
+
+@retry(stop_max_attempt_number=5, wait_fixed=10000, retry_on_result=retry_if_session_none)
 # 登陆并返回session
 def getSession(user, loginUrl, config):
     params = {

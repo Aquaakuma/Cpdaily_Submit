@@ -53,13 +53,8 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: Liao # 此处填入环境名
-    needs: submit_user1
 
     steps:
-    - name: Sleep for 30 minute
-      uses: jakejarvis/wait-action@master
-      with:
-        time: '30m'
     - uses: actions/checkout@v2
     - name: Set up Python 3.6
       uses: actions/setup-python@v2
