@@ -19,6 +19,20 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: TUT # 此处填入环境名
+    services:
+      # Label used to access the service container
+      wisedu-unified:
+        # Docker Hub image
+        image: registry.cn-shenzhen.aliyuncs.com/wisedu_api/wisedu_api:v1
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "curl --fail http://localhost:8080/wisedu-unified-login-api-v1.0/swagger-ui.html || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps port 6379 on service container to the host
+          - 8080:8080
 
     steps:
     - uses: actions/checkout@v2
@@ -53,6 +67,20 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: Liao # 此处填入环境名
+    services:
+      # Label used to access the service container
+      wisedu-unified:
+        # Docker Hub image
+        image: registry.cn-shenzhen.aliyuncs.com/wisedu_api/wisedu_api:v1
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "curl --fail http://localhost:8080/wisedu-unified-login-api-v1.0/swagger-ui.html || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps port 6379 on service container to the host
+          - 8080:8080
 
     steps:
     - uses: actions/checkout@v2
