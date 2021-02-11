@@ -12,7 +12,7 @@ on:
       - main
   schedule:
     # 每天北京时间8点执行，第二个0代表小时，以此类推，如：9点——'0 1 * * *''
-    - cron: '0 0,1,2 * * *'
+    - cron: '0 0,1 * * *'
 
 jobs:
   submit_user1:
@@ -56,6 +56,10 @@ jobs:
     needs: submit_user1
 
     steps:
+    - name: Sleep for 30 minute
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '30m'
     - uses: actions/checkout@v2
     - name: Set up Python 3.6
       uses: actions/setup-python@v2
