@@ -88,12 +88,12 @@ def log(content):
 
 def retry_if_session_none(session):
     if session == None:
-        print("没有获取到cookies，10秒后再次重试。。。")
+        print("没有获取到cookies，重试中。。。")
     return session is None
 
 
-@retry(stop_max_attempt_number=5, wait_fixed=10000, retry_on_result=retry_if_session_none)
 # 登陆并返回session
+@retry(stop_max_attempt_number=5, retry_on_result=retry_if_session_none)
 def getSession(user, loginUrl, config):
     params = {
         'login_url': loginUrl,
