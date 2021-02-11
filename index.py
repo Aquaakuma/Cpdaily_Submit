@@ -87,7 +87,8 @@ def log(content):
 
 
 def retry_if_session_none(session):
-    print("没有获取到cookies，10秒后再次重试。。。")
+    if session == None:
+        print("没有获取到cookies，10秒后再次重试。。。")
     return session is None
 
 
