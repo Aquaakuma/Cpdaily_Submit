@@ -10,7 +10,14 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["config.yml"]
+            "args": ["config_tut.yml"],
+            "env": {
+                "username": "",
+                "password": "",
+                "address": "",
+                "school": "",
+                "sckey": ""
+            }
         }
     ]
 }
