@@ -93,7 +93,7 @@ def retry_if_session_none(session):
 
 
 # 登陆并返回session
-@retry(stop_max_attempt_number=5, retry_on_result=retry_if_session_none)
+@retry(stop_max_attempt_number=20, retry_on_result=retry_if_session_none)
 def getSession(user, loginUrl, config):
     params = {
         'login_url': loginUrl,
