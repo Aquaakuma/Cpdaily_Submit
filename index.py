@@ -44,7 +44,7 @@ def getCpdailyApis(user):
             res = requests.get(url='https://mobile.campushoy.com/v6/config/guest/tenant/info', params=params,
                                verify=not debug)
             data = res.json()['data'][0]
-            joinType = data['joinType']
+            # joinType = data['joinType']
             idsUrl = data['idsUrl']
             ampUrl = data['ampUrl']
             if 'campusphere' in ampUrl or 'cpdaily' in ampUrl:
@@ -86,14 +86,14 @@ def log(content):
     sys.stdout.flush()
 
 
-def retry_if_session_none(session):
+def retry_if_session_none(session): 
     if session == None:
         print("没有获取到cookies，重试中。。。")
     return session is None
 
 
 # 登陆并返回session
-@retry(stop_max_attempt_number=20, retry_on_result=retry_if_session_none)
+@retry(stop_max_attempt_number=5, retry_on_result=retry_if_session_none)
 def getSession(user, loginUrl, config):
     params = {
         'login_url': loginUrl,
