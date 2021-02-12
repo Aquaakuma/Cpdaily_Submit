@@ -61,6 +61,7 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: Liao # 此处填入环境名
+    needs: submit_user1
     services:
       # Label used to access the service container
       wisedu-unified:
