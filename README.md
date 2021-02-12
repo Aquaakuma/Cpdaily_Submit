@@ -28,16 +28,16 @@
    | sckey | server酱推送的sckey |
    | config | 第三步定义的名字 |  
 
-   ![图示](https://raw.githubusercontent.com/TUT123456/Cpdaily_Submit/main/docs/imgs/secret.png)
-6. **修改 [`.github/workflows/python_auto.yml`](https://github.com/TUT123456/Cpdaily_Submit/blob/77c5810562005bde2dba37306deb99ad057d6d17/.github/workflows/python_auto.yml#L21) 21行 Environment 的值为上一步创建的环境名**
+   ![图示](https://raw.githubusercontent.com/Aquaakuma/Cpdaily_Submit/main/docs/imgs/secret.png)
+6. **修改 [`.github/workflows/python_auto.yml`](https://github.com/Aquaakuma/Cpdaily_Submit/blob/77c5810562005bde2dba37306deb99ad057d6d17/.github/workflows/python_auto.yml#L21) 21行 Environment 的值为上一步创建的环境名**
    如果有多用户要求，可以为每个用户都创建一个 Environment Secret，然后在 workflow 添加一个 environment 值不同的job。
 7. **运行结果将在每天15点左右通过微信的server酱通知给您**  
-   ![图示](https://raw.githubusercontent.com/TUT123456/Cpdaily_Submit/main/docs/imgs/result.jpg)
+   ![图示](https://raw.githubusercontent.com/Aquaakuma/Cpdaily_Submit/main/docs/imgs/result.jpg)
 
 ## 其他
    - 本脚本根据 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit) 云函数代码修改而来，所以原项目中能用云函数实现签到的情况在这里应该适用。
    - 脚本中只提供了Server酱的推送方式，因为我觉得这种方式简单方便，如果想用其他推送方式，如邮箱推送，可以参考 auto-submit。
-   - 默认每天0点(UTC时区，即北京时间8点。)签到，可以到 [`.github/workflows/python_auto.yml`](https://github.com/TUT123456/Cpdaily_Submit/blob/77c5810562005bde2dba37306deb99ad057d6d17/.github/workflows/python_auto.yml#L12) 修改，cron格式，第二位数字代表当天时间，以此类推。
+   - 默认每天0点(UTC时区，即北京时间8点。)签到，可以到 [`.github/workflows/python_auto.yml`](https://github.com/Aquaakuma/Cpdaily_Submit/blob/77c5810562005bde2dba37306deb99ad057d6d17/.github/workflows/python_auto.yml#L12) 修改，cron格式，第二位数字代表当天时间，以此类推。
 ## 致谢
 
 @ZimoLoveShuang/auto-submit 提供签到代码
