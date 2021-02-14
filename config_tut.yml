@@ -1,7 +1,7 @@
 #登陆相关配置
 login:
-  #开放的模拟登陆api服务器地址, 也可以使用http://localhost:8080/wisedu-unified-login-api-v1.0/api/login, 并在workflows文件中相关取消注释.
-  api: "https://api.aqualink.top:6543/wisedu-unified-login-api-v1.0/api/login"
+  #开放的模拟登陆api服务器地址 
+  api: "http://www.zimo.wiki:8080/wisedu-unified-login-api-v1.0/api/login"
 
 #今日校园相关配置
 cpdaily:
