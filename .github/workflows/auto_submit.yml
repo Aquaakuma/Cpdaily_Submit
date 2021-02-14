@@ -43,6 +43,8 @@ jobs:
 
     - name: Run code 
       env:
+        # 模拟登录api地址
+        login_api: ${{ secrets.login_api }}
         # 配置个人信息
         username: ${{ secrets.username }}
         password: ${{ secrets.password }}
@@ -85,6 +87,8 @@ jobs:
 
     - name: Run code 
       env:
+        # 模拟登录api地址
+        login_api: ${{ secrets.login_api }}
         # 配置个人信息
         username: ${{ secrets.username }}
         password: ${{ secrets.password }}

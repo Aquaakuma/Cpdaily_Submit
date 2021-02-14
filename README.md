@@ -9,7 +9,7 @@
 ## 使用说明
 
 1. **在右上角Fork本项目**  
-2. **启用Actions，fork仓库不会立即执行action，需手动执行一次 Run workflow**
+2. **fork仓库不会立即执行action, 需要手动开启action**
 3. **编辑要提交的问题**
    - 根据个人情况修改 config.yml 中的内容。
    - 如果不懂如何配置请用 [auto-submit](https://github.com/ZimoLoveShuang/auto-submit) 项目中的 generate.py 生成一个配置文件。
@@ -26,7 +26,8 @@
    | address | 定位地址 |
    | school | 学校 |
    | sckey | server酱推送的sckey |
-   | config | 第三步定义的名字 |  
+   | config | 第三步定义的名字 |
+   | login_api | (可选)会覆盖config.yml中的值 |
 
    ![图示](https://raw.githubusercontent.com/Aquaakuma/Cpdaily_Submit/main/docs/imgs/secret.png)
 6. **修改 [`.github/workflows/python_auto.yml`](https://github.com/Aquaakuma/Cpdaily_Submit/blob/77c5810562005bde2dba37306deb99ad057d6d17/.github/workflows/python_auto.yml#L21) 21行 Environment 的值为上一步创建的环境名**
