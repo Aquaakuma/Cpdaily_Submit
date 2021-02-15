@@ -45,7 +45,7 @@ cpdaily:
         type: 2
         value: 否
     - default:
-        title: 今天你的居住地变动属于以下哪个类型？ 
+        title: 今天你的居住地变动属于以下哪个类型？\xa0
         type: 2
         value: 未变动
     - default:
