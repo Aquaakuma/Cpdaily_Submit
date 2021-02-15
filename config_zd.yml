@@ -41,11 +41,11 @@ cpdaily:
         type: 2
         value: 否
     - default:
-        title: 你的家庭所在地或实际居住地是否属于中高风险地区？
+        title: 你的家庭所在地或实际居住地是否属于中高风险地区？（以国务院客户端小程序每日公布的地区为准）
         type: 2
         value: 否
     - default:
-        title: 今天你的居住地变动属于以下哪个类型？ 
+        title: 今天你的居住地变动属于以下哪个类型？
         type: 2
         value: 未变动
     - default:
