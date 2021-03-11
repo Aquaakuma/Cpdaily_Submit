@@ -73,7 +73,7 @@ def sendQmail(picture, title, smtp_profile):
     smtp_to = smtp_profile['email']      # 收件人邮箱账号，我这边发送给自己
     msg = MIMEMultipart('related')
     msg_str = """
-    <p>每日一图</p>
+    <p>以下是TUT的老婆</p>
     <img src="cid:pixiv">
     """
     msg.attach(MIMEText(msg_str, 'html', 'utf-8'))
