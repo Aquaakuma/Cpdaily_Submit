@@ -96,8 +96,8 @@ def sendQmail(picture, title, smtp_profile):
 
 # 综合提交
 def InfoSubmit(msg, msg_profile):
-    if('apikey' in msg_profile.keys()):
-        picture = download_pic('057294506049c2a06c6fa4')
+    if('apikey' in msg_profile.keys() and msg_profile['apikey']):
+        picture = download_pic(msg_profile['apikey'])
         print("获取图片建议使用apikey, 了解详情: https://api.lolicon.app/#/setu")
     else:
         picture = download_pic('')
@@ -110,6 +110,6 @@ def InfoSubmit(msg, msg_profile):
     else:
         print("没有邮箱接收地址，将不会发送邮件通知")
     if('sckey' in msg_profile.keys()):
-        sendServerChan(msg, msg_profile['sckey'])
+        if(msg_profile['sckey']): sendServerChan(msg, msg_profile['sckey'])
     else:
         print("没有server酱sckey，将不会发送微信通知")

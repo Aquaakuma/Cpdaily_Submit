@@ -71,7 +71,7 @@ def getCpdailyApis(user):
     if flag:
         log(user['school'] + ' 未找到该院校信息，请检查是否是学校全称错误')
         exit(-1)
-    # log(apis)
+    log(apis)
     return apis
 
 
@@ -108,7 +108,7 @@ def getSession(user, loginUrl, config):
 
     cookies = {}
     # 借助上一个项目开放出来的登陆API，模拟登陆
-    if('login_api' in user.keys()):
+    if('login_api' in user.keys() and user['login_api']):
         res = requests.post(user['login_api'], params, verify=not debug)
     else:
         res = requests.post(config['login']['api'], params, verify=not debug)
