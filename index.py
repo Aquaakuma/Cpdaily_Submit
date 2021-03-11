@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-import sys
-import requests
 import json
-import yaml
-import oss2
-from urllib.parse import urlparse
-from datetime import datetime, timedelta, timezone
-from urllib3.exceptions import InsecureRequestWarning
 import os
-from retrying import retry
+import sys
+from datetime import datetime, timedelta, timezone
+from urllib.parse import urlparse
 
+import oss2
+import requests
+import yaml
+from retrying import retry
+from urllib3.exceptions import InsecureRequestWarning
+
+from notification import InfoSubmit
 
 # debug模式
 debug = False
@@ -69,7 +71,7 @@ def getCpdailyApis(user):
     if flag:
         log(user['school'] + ' 未找到该院校信息，请检查是否是学校全称错误')
         exit(-1)
-    log(apis)
+    # log(apis)
     return apis
 
 
@@ -106,7 +108,7 @@ def getSession(user, loginUrl, config):
 
     cookies = {}
     # 借助上一个项目开放出来的登陆API，模拟登陆
-    if user['login_api']:
+    if('login_api' in user.keys()):
         res = requests.post(user['login_api'], params, verify=not debug)
     else:
         res = requests.post(config['login']['api'], params, verify=not debug)
@@ -274,25 +276,6 @@ def submitForm(formWid, address, collectWid, schoolTaskWid, form, session, host)
     msg = r.json()['message']
     return msg
 
-
-# server酱通知
-def sendServerChan(msg, sckey):
-    log('正在发送Server酱。。。')
-    res = requests.post(url='https://sctapi.ftqq.com/{0}.send'.format(sckey),
-                            data={'title': '今日校园疫情上报结果通知', 'desp': getTimeStr() + "\n" + str(msg)})
-    code = res.json()['data']['error']
-    if code == 'SUCCESS':
-        log('发送Server酱通知成功。。。')
-    else:
-        log('发送Server酱通知失败。。。')
-        log('Server酱返回结果'+code)
-
-
-# 综合提交
-def InfoSubmit(msg, sckey):
-    if(sckey): sendServerChan(msg, sckey)
-
-
 def main_handler(user, yml_file):
     try:
         # 设置环境变量
@@ -309,8 +292,7 @@ def main_handler(user, yml_file):
             params = queryForm(session, apis)
             if str(params) == 'None':
                 log('获取最新待填写问卷失败，可能是辅导员还没有发布。。。')
-                InfoSubmit('没有新问卷', user['sckey'])
-                exit(-1)
+                raise Exception("没有新问卷！")
             log('查询最新待填写问卷成功。。。')
             log('正在自动填写问卷。。。')
             form = fillForm(session, params['form'], apis['host'], config)
@@ -320,22 +302,21 @@ def main_handler(user, yml_file):
                                 params['schoolTaskWid'], form, session, apis['host'])
             if msg == 'SUCCESS':
                 log('自动提交成功！')
-                InfoSubmit('自动提交成功！', user['sckey'])
+                InfoSubmit('自动提交成功！', user)
             elif msg == '该收集已填写无需再次填写':
                 log('今日已提交！')
-                InfoSubmit('今日已提交！', user['sckey'])
+                InfoSubmit('今日已提交！', user)
                 # InfoSubmit('今日已提交！')
             else:
                 log('自动提交失败。。。')
                 log('错误是' + msg)
-                InfoSubmit('自动提交失败！错误是', user['sckey'])
-                exit(-1)
+                raise Exception(msg)
         else:
             log('模拟登陆失败。。。')
             log('原因可能是学号或密码错误，请检查配置后，重启脚本。。。')
-            exit(-1)
+            raise Exception("原因可能是学号或密码错误，请检查配置后，重启脚本。。。")
     except Exception as e:
-        InfoSubmit("出现问题了！"+str(e), user['sckey'])
+        InfoSubmit("出现问题了！"+str(e), user)
         raise e
     else:
         return 'success'
