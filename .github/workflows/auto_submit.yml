@@ -51,6 +51,11 @@ jobs:
         address: ${{ secrets.address }}
         school: ${{ secrets.school }}
         # 配置推送信息
+        # smtp 配置
+        smtp_from: ${{ secrets.smtp_from }}
+        smtp_pass: ${{ secrets.smtp_pass }}
+        # mail
+        email: ${{ secrets.email }}
         # ServerChan
         sckey: ${{ secrets.sckey }}
         # 使用的config.yml
@@ -95,6 +100,11 @@ jobs:
         address: ${{ secrets.address }}
         school: ${{ secrets.school }}
         # 配置推送信息
+        # smtp 配置
+        smtp_from: ${{ secrets.smtp_from }}
+        smtp_pass: ${{ secrets.smtp_pass }}
+        # mail
+        email: ${{ secrets.email }}
         # ServerChan
         sckey: ${{ secrets.sckey }}
         # 使用的config.yml
@@ -139,6 +149,11 @@ jobs:
         address: ${{ secrets.address }}
         school: ${{ secrets.school }}
         # 配置推送信息
+        # smtp 配置
+        smtp_from: ${{ secrets.smtp_from }}
+        smtp_pass: ${{ secrets.smtp_pass }}
+        # mail
+        email: ${{ secrets.email }}
         # ServerChan
         sckey: ${{ secrets.sckey }}
         # 使用的config.yml
