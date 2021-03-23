@@ -8,21 +8,17 @@ users:
   #单个用户配置
   - user:
       #username 学号或者工号
-      username: '3207619097'
+      username: ''
       #password 密码
-      password: 'zkx20010530'
-      #username 学号或者工号
-    #   username: '3175103030'
-    #   #password 密码
-    #   password: 'CYX24y11'
+      password: ''
       #address 地址，定位信息
-      address: 中国福建省福州市仓山区洋枋路
+      address: 中国
       #email 接受通知消息的邮箱
-      email: 756797134@qq.com
+      email: @qq.com
       #school 学校全称
-      school: 福建农林大学
-      lon: '119.240955'
-      lat: '26.088458'
+      school: 
+      lon: ''
+      lat: ''
       photo: './photo.jpg'
       abnormalReason: ''
 
@@ -72,6 +68,6 @@ cpdaily:
 
 
 SMTP:
-    smtp_from: '756797134@qq.com' # 邮件服务器登录用户名
-    smtp_pass: 'fektbxxmjrgnbfbh' # 邮件服务器登录密码
-    apikey: '057294506049c2a06c6fa4' # 色图api
+    smtp_from: '' # 邮件服务器登录用户名
+    smtp_pass: '' # 邮件服务器登录密码
+    apikey: '' # 色图api
