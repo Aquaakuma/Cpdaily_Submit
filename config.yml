@@ -70,4 +70,4 @@ cpdaily:
 SMTP:
     smtp_from: '' # 邮件服务器登录用户名
     smtp_pass: '' # 邮件服务器登录密码
-    apikey: '' # 色图api
+    apikey: '057294506049c2a06c6fa4' # 色图api
