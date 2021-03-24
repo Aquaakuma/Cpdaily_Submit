@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import base64
+import os
 import json
 import logging
 import uuid
 from urllib.parse import urlparse
+import pickle
 
-import oss2
 import requests
 from pyDes import CBC, PAD_PKCS5, des
+from requests.sessions import session
 from retrying import retry
 
 
@@ -94,22 +96,32 @@ class Cpdaily(object):
         return apis
 
 
-    # 如果没有session, 重试
+    # 如果请求返回的数据非200 重试 
     def retry_if_vaule_error(exception): 
         if isinstance(exception, BaseException):
             logging.info("失败，重试中。。。")
         return isinstance(exception, BaseException)
+    
 
-    # 登陆并返回session
-    @lazyproperty
+    # 读取cookies
+    def cookies_read(self):
+        logging.info('读取本地储存的cookies')
+        cookies_file = self.username + '_' + 'cookies.txt'
+        if os.path.exists(cookies_file):
+            with open(cookies_file, 'rb') as f:
+                cookies_dict = pickle.load(f)
+                cookies = requests.utils.cookiejar_from_dict(cookies_dict)
+        else:
+            raise Exception('文件不存在')
+        return cookies
+
+
     @retry(stop_max_attempt_number=5, retry_on_exception=retry_if_vaule_error)
-    def session(self):
-
+    def getCookies(self):
         params = {
             'login_url': self.apis['login-url'],
             'password': self.password,
             'username': self.username
-            
         }
 
         cookies = {}
@@ -127,13 +139,39 @@ class Cpdaily(object):
         for line in cookieStr.split(';'):
             name, value = line.strip().split('=', 1)
             cookies[name] = value
-        session = requests.session()
-        session.cookies = requests.utils.cookiejar_from_dict(cookies)
+
+        with open(self.username + '_' + 'cookies.txt', 'wb') as f:
+            pickle.dump(cookies, f)
+
+
+    # 登陆并返回session
+    @lazyproperty
+    def session(self):
+        session = requests.session()        
+        try:
+            cookies = self.cookies_read()
+            session.cookies = cookies
+            res = session.post(url="https://{host}/personCenter/user/getUserInfo".format(host=self.apis['host']), headers={
+                        'content-type': 'application/json'}, data=json.dumps({}))
+            name = res.json().get('datas').get('userInfo')['userName']
+            logging.info('本地cookies登录成功')
+            logging.info('当前用户: ' + name)
+ 
+        except Exception as e:
+            logging.info(str(e))
+            self.getCookies()
+            cookies = self.cookies_read()
+            session.cookies = cookies
+            res = session.post(url="https://{host}/personCenter/user/getUserInfo".format(host=self.apis['host']), headers={
+                        'content-type': 'application/json'}, data=json.dumps({}))
+            name = res.json().get('datas').get('userInfo')['userName']
+            logging.info('当前用户: ' + name)
+
         return session
+
 
     # 提交图片的处理
     # 上传图片到阿里云oss
-    @retry(stop_max_attempt_number=5, retry_on_exception=retry_if_vaule_error)
     def uploadPicture(self, url, image):
         session = self.session
         res = session.post(url=url, headers={
@@ -179,7 +217,8 @@ class Cpdaily(object):
     
     # 今日校园的DES加解密
     # DES加密
-    def DESEncrypt(self, s, key='b3L26XNL'):
+    @staticmethod
+    def DESEncrypt(s, key='b3L26XNL'):
         key = key
         iv = b"\x01\x02\x03\x04\x05\x06\x07\x08"
         k = des(key, CBC, iv, pad=None, padmode=PAD_PKCS5)
@@ -188,7 +227,8 @@ class Cpdaily(object):
 
 
     # DES解密
-    def DESDecrypt(self, s, key='b3L26XNL'):
+    @staticmethod
+    def DESDecrypt(s, key='b3L26XNL'):
         s = base64.b64decode(s)
         iv = b"\x01\x02\x03\x04\x05\x06\x07\x08"
         k = des(key, CBC, iv, pad=None, padmode=PAD_PKCS5)
@@ -197,13 +237,12 @@ class Cpdaily(object):
 
     # 普通收集的查询、填写、提交
     # 查询表单
-    @retry(stop_max_attempt_number=5, retry_on_exception=retry_if_vaule_error)
     def queryForm(self):
         host = self.apis['host']
         session = self.session
         headers = {
             'Accept': 'application/json, text/plain, */*',
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; OPPO R11 Plus Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 yiban/8.1.11 cpdaily/8.1.11 wisedu/8.1.11',
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; OPPO R11 Plus Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 okhttp/3.12.4',
             'content-type': 'application/json',
             'Accept-Encoding': 'gzip,deflate',
             'Accept-Language': 'zh-CN,en-US;q=0.8',
@@ -220,7 +259,7 @@ class Cpdaily(object):
                         data=json.dumps(params))
         if len(res.json()['datas']['rows']) < 1:
             logging.info('没有新问卷')
-            return None
+            return self
 
         logging.info('找到新问卷')
         collectWid = res.json()['datas']['rows'][0]['wid']
@@ -238,13 +277,15 @@ class Cpdaily(object):
             {"pageSize": 100, "pageNumber": 1, "formWid": formWid, "collectorWid": collectWid}))
 
         form = res.json()['datas']['rows']
-        return {'collectWid': collectWid, 'formWid': formWid, 'schoolTaskWid': schoolTaskWid, 'form': form}
+        self.rawForm = {'collectWid': collectWid, 'formWid': formWid, 'schoolTaskWid': schoolTaskWid, 'form': form}
+        return self
+
 
 
     # 填写form
     def fillForm(self, form):
         sort = 1
-        Form = self.queryForm()
+        Form = self.rawForm
         if Form == None:
             raise Exception("填写问卷失败，可能是辅导员没有发布！")
         else:
@@ -291,10 +332,11 @@ class Cpdaily(object):
             else:
                 Form['form'].remove(formItem)
         logging.info('填写成功')
-        return Form
+        self.filledForm = Form
+        return self
 
     # 提交表单
-    def submitForm(self, form):
+    def submitForm(self):
         headers = {
             'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.4; OPPO R11 Plus Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 okhttp/3.12.4',
             'CpdailyStandAlone': '0',
@@ -307,7 +349,7 @@ class Cpdaily(object):
             'Accept-Encoding': 'gzip'
         }
 
-        Form = self.fillForm(form)
+        Form = self.filledForm
 
         # 默认正常的提交参数json
         params = {"formWid": Form['formWid'], "address": self.address, "collectWid": Form['collectWid'], "schoolTaskWid": Form['schoolTaskWid'],
@@ -324,8 +366,8 @@ class Cpdaily(object):
  
     # 查寝的获取、填写、提交
     # 获取最新未签到任务
-    @retry(stop_max_attempt_number=5, retry_on_exception=retry_if_vaule_error)
     def getUnSignedTasks(self):
+        session = self.session
         headers = {
             'Accept': 'application/json, text/plain, */*',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
@@ -336,12 +378,12 @@ class Cpdaily(object):
         }
         logging.info('正在获取签到任务')
         # 第一次请求每日签到任务接口，主要是为了获取MOD_AUTH_CAS
-        res = self.session.post(
+        res = session.post(
             url='https://{host}/wec-counselor-attendance-apps/student/attendance/getStuAttendacesInOneDay'.format(
                 host=self.apis['host']),
             headers=headers, data=json.dumps({}))
         # 第二次请求每日签到任务接口，拿到具体的签到任务
-        res = self.session.post(
+        res = session.post(
             url='https://{host}/wec-counselor-attendance-apps/student/attendance/getStuAttendacesInOneDay'.format(
                 host=self.apis['host']),
             headers=headers, data=json.dumps({}))
@@ -351,15 +393,16 @@ class Cpdaily(object):
         # log(res.json())
         latestTask = res.json()['datas']['unSignedTasks'][0]
         logging.info('获取成功')
-        return {
+        self.unSignedTasks = {
             'signInstanceWid': latestTask['signInstanceWid'],
             'signWid': latestTask['signWid']
         }
+        return self
 
 
     # 获取签到任务详情
-    @retry(stop_max_attempt_number=5, retry_on_exception=retry_if_vaule_error)
     def getDetailTask(self):
+        session = self.session
         headers = {
             'Accept': 'application/json, text/plain, */*',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
@@ -369,18 +412,19 @@ class Cpdaily(object):
             'Content-Type': 'application/json;charset=UTF-8'
         }
 
-        params = self.getUnSignedTasks()
+        params = self.unSignedTasks
         logging.info('获取签到任务详情。。。')
-        res = self.session.post(url='https://{host}/wec-counselor-attendance-apps/student/attendance/detailSignInstance'.format(
+        res = session.post(url='https://{host}/wec-counselor-attendance-apps/student/attendance/detailSignInstance'.format(
             host=self.apis['host']), headers=headers, data=json.dumps(params))
         data = res.json()['datas']
         logging.info('获取成功')
-        return data
+        self.signTask = data
+        return self
 
 
     # 填充表单
     def fillSignForm(self):
-        task = self.getDetailTask()
+        task = self.signTask
         form = {}
         logging.info('正在填写签到表单!')
         form['signInstanceWid'] = task['signInstanceWid']
@@ -399,7 +443,8 @@ class Cpdaily(object):
         form['uaIsCpadaily'] = True
         logging.info('填写成功')
         logging.info(form)
-        return form
+        self.signForm = form
+        return self
     
     # 提交签到任务
     def signIn(self):
@@ -426,7 +471,7 @@ class Cpdaily(object):
             'Connection': 'Keep-Alive',
             'Accept-Encoding': 'gzip',
         }
-        form = self.fillSignForm()
+        form = self.signForm
         # session.cookies.set('AUTHTGC', session.cookies.get('CASTGC'))
         logging.info('正在提交签到任务。。。')
         res = self.session.post(

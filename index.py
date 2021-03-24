@@ -27,30 +27,34 @@ def main_handler(event, context):
                     level=logging.INFO)
 
     for user in config['users']:
-        submitForm = Cpdaily(
-            username = user['username'], 
-            password = user['password'], 
-            email = user['email'], 
-            address = user['address'], 
-            school = user['school'],
-            lon = user['lon'],
-            lat = user['lat'],
-            photo = user['photo'],
-            abnormalReason = user['abnormalReason']
+        cpdaily = Cpdaily(
+            username = user['user']['username'], 
+            password = user['user']['password'], 
+            email = user['user']['email'], 
+            address = user['user']['address'], 
+            school = user['user']['school'],
+            lon = user['user']['lon'],
+            lat = user['user']['lat'],
+            photo = user['user']['photo'],
+            abnormalReason = user['user']['abnormalReason']
         )
         smtp = config['SMTP']
         send = notification(**smtp)
-        if event["Message"] == "普通收集":
+        try:
             try:
                 # 开始登录
-                logging.info('当前用户：' + str(user['username']))
                 form = config['cpdaily']
-                msg = submitForm.submitForm(form)
+                if event['Message'] == "普通收集":
+                    msg = cpdaily.queryForm().fillForm(form).submitForm()
+                elif event["Message"] == "查寝":
+                    msg = cpdaily.getUnSignedTasks().getDetailTask().fillSignForm().signIn()
 
                 if msg == 'SUCCESS':
-                    logging.info('自动提交成功！')
+                    logging.info('签到成功！')
+                    msg = '签到成功'
                 elif msg == '该收集已填写无需再次填写':
                     logging.info('今日已提交！')
+                    msg = '今日已提交'
                     # InfoSubmit('今日已提交！')
                 else:
                     logging.info('自动提交失败。。。')
@@ -58,41 +62,16 @@ def main_handler(event, context):
                     raise Exception(msg)
 
             except Exception as e:
-                send.sendQmail(user['email'], str(e), "以下是我的老婆")
+                # send.sendQmail(user['user']['email'], str(e), "以下是我的老婆")
+                logging.info(str(e))
                 raise e
             
-            send.sendQmail(user['email'], str(msg), "以下是我的老婆")
-            return str(msg)
-        
-        elif event["Message"] == "查寝":
-            try:
-                # 开始登录
-                logging.info('当前用户：' + str(user['username']))
-                msg = submitForm.signIn()
-
-                if msg == 'SUCCESS':
-                    logging.info('签到成功！')
-                else:
-                    logging.info('签到失败。。。')
-                    logging.info('错误是' + msg)
-                    raise Exception(msg)
-
-            except Exception as e:
-                logging.info("错误：" + str(e))
-                # send.sendQmail(user['email'], str(e), "以下是我的老婆")
-                raise e
-            
-            # send.sendQmail(user['email'], str(msg), "以下是我的老婆")
+            # send.sendQmail(user['user']['email'], str(msg), "以下是我的老婆")
             return str(msg)
 
+        except:
+            pass
 
-# main_handler({
-
-#     "Type": "timer",
-
-#     "TriggerName": "EveryDay",
-
-#     "Time": "2019-02-21T11:49:00Z",
-
-#     "Message": "查寝"
-# }, {})
+main_handler(event={
+    'Message': '查寝'
+}, context={})

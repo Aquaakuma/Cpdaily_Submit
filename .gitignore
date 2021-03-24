@@ -133,3 +133,4 @@ dmypy.json
 
 # config.yml
 config.yml
+*cookies.txt
