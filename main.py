@@ -1,6 +1,6 @@
+import logging
 from collector import Collector
 from attendance import Attendance
-import logging
 import yaml
 import click
 from notification import notification
