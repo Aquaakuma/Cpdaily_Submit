@@ -2,16 +2,19 @@ from login import Login
 import logging
 import json
 import yaml
+import uuid
 
 
 class Collector(Login):
-    def __init__(self, username, password, school, address, photo) -> None:
+    def __init__(self, username, password, school, address, lon, lat, photo) -> None:
         super(Collector, self).__init__(username, password, school, address)
         self.getApis().getSession()
         self.form = None
         self.collectWid = None
         self.formWid = None
         self.schoolTaskWid = None
+        self.lon = lon
+        self.lat = lat
         self.photo = photo
 
     # 普通收集的查询、填写、提交
@@ -185,11 +188,23 @@ class Collector(Login):
 
     # 提交表单
     def submitForm(self):
+
+        extension = {
+            "model": "OPPO R11 Plus",
+            "appVersion": "8.2.14",
+            "systemVersion": "9.1.0",
+            "userId": self.username,
+            "systemName": "android",
+            "lon": self.lon,
+            "lat": self.lat,
+            "deviceId": str(uuid.uuid1()),
+        }
+
         headers = {
             "User-Agent": "Mozilla/5.0 (Linux; Android 4.4.4; OPPO R11 Plus Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Safari/537.36 okhttp/3.12.4",
             "CpdailyStandAlone": "",
             "extension": "1",
-            "Cpdaily-Extension": "Ew9uONYq03Siz+VLCzZ4RiWRaXXBubIGc1d7ecaS2YmSDf1+elDL0gdwAw977HbPzvgR3pkeyW3djmnPOMxYro3Tps7PNmLoqfNTAECZqcM1LAyx+2zTfDExNa4yDWs83AyTnSKXs7oHQvFOfXhKNY1OXVzIdnwOkgaNw7XxzM1+2efCWAJgUBoHNV3n3MayLqOwPvSCvBke+SHC/Hy/53+ehU9A1lst6JlpGiFhlEOUybo5s5/o+b/XLUexuEE50IQgdPL4Hi4vPe4yVzA8QLpIMKSFIaRm",
+            "Cpdaily-Extension": self.DESEncrypt(json.dumps(extension)),
             "Content-Type": "application/json; charset=utf-8",
             # 请注意这个应该和配置文件中的host保持一致
             "Host": self.apis["host"],

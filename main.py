@@ -52,6 +52,8 @@ def main(config, generate, attendance, collector):
                 username=user["user"]["username"],
                 password=user["user"]["password"],
                 address=user["user"]["address"],
+                lon=user["user"]["lon"],
+                lat=user["user"]["lat"],
                 school=user["user"]["school"],
                 photo=user["user"]["photo"],
             )

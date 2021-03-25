@@ -4,7 +4,6 @@ import base64
 import os
 import json
 import logging
-import uuid
 from urllib.parse import urlparse
 import pickle
 
