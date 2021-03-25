@@ -43,6 +43,7 @@ def main(config, generate, attendance, collector, mail_picture):
                 msg = cpdaily.getUnSignedTasks().getDetailTask().fillForm().signIn()
                 send.sendQmail(email=user["user"]["email"], title=msg, content="这是我老婆", picture=mail_picture)
             except Exception as e:
+                logging.info(str(e))
                 send.sendQmail(
                     email=user["user"]["email"], title=str(e), content="这是我老婆", picture=mail_picture
                 )
@@ -62,6 +63,7 @@ def main(config, generate, attendance, collector, mail_picture):
                 msg = cpdaily.queryForm().fillForm(config["cpdaily"]).submitForm()
                 send.sendQmail(email=user["user"]["email"], title=msg, content="这是我老婆", picture=mail_picture)
             except Exception as e:
+                logging.info(str(e))
                 send.sendQmail(
                     email=user["user"]["email"], title=str(e), content="这是我老婆", picture=mail_picture
                 )

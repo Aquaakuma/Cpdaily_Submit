@@ -54,7 +54,7 @@ class notification(object):
             self.send.login(self.smtp_from, self.smtp_pass)
             self.send.sendmail(self.smtp_from, smtp_to, msg.as_string())
             logging.info("发送成功")
-        except:
-            logging.info("发送失败")
+        except Exception as e:
+            logging.info("发送失败: " + str(e))
 
         self.send.quit()
