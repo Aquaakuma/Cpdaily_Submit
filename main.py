@@ -21,7 +21,8 @@ def getYmlConfig(yaml_file):
 @click.option("--generate", "-g", is_flag=True, help="生成表单")
 @click.option("--attendance", "-a", is_flag=True, help="查寝")
 @click.option("--collector", "-c", is_flag=True, help="普通收集")
-def main(config, generate, attendance, collector):
+@click.option("--mail-picture", "-mp", default=None, help="邮箱附带的图片")
+def main(config, generate, attendance, collector, mail_picture):
     config = getYmlConfig(yaml_file=config)
     smtp = config["SMTP"]
     send = notification(**smtp)
@@ -40,10 +41,10 @@ def main(config, generate, attendance, collector):
             )
             try:
                 msg = cpdaily.getUnSignedTasks().getDetailTask().fillForm().signIn()
-                send.sendQmail(email=user["user"]["email"], title=msg, content="这是我老婆")
+                send.sendQmail(email=user["user"]["email"], title=msg, content="这是我老婆", picture=mail_picture)
             except Exception as e:
                 send.sendQmail(
-                    email=user["user"]["email"], title=str(e), content="这是我老婆"
+                    email=user["user"]["email"], title=str(e), content="这是我老婆", picture=mail_picture
                 )
                 pass
     elif collector:
@@ -59,10 +60,10 @@ def main(config, generate, attendance, collector):
             )
             try:
                 msg = cpdaily.queryForm().fillForm(config["cpdaily"]).submitForm()
-                send.sendQmail(email=user["user"]["email"], title=msg, content="这是我老婆")
+                send.sendQmail(email=user["user"]["email"], title=msg, content="这是我老婆", picture=mail_picture)
             except Exception as e:
                 send.sendQmail(
-                    email=user["user"]["email"], title=str(e), content="这是我老婆"
+                    email=user["user"]["email"], title=str(e), content="这是我老婆", picture=mail_picture
                 )
                 pass
     elif generate:
@@ -73,6 +74,8 @@ def main(config, generate, attendance, collector):
                 address=user["user"]["address"],
                 school=user["user"]["school"],
                 photo=user["user"]["photo"],
+                lon=user["user"]["lon"],
+                lat=user["user"]["lat"],
             )
             cpdaily.queryForm().generate()
 

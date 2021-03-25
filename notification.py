@@ -26,7 +26,7 @@ class notification(object):
         return bj_dt.strftime("%Y-%m-%d %H:%M:%S")
 
     # 发送邮件通知
-    def sendQmail(self, email, title, content):
+    def sendQmail(self, email, title, content, picture=None):
         smtp_to = email  # 收件人邮箱账号，我这边发送给自己
         logging.info("填写邮件内容。。。")
         msg = MIMEMultipart("related")
@@ -37,7 +37,9 @@ class notification(object):
 
         logging.info("发送邮件")
         try:
-            with open(download_pic(self.apikey), "rb") as f:
+            if picture == None:
+                picture = download_pic(self.apikey)
+            with open(picture, "rb") as f:
                 msg_str = """
                     <p>{content}</p>
                     <img src="cid:pixiv">
