@@ -132,6 +132,6 @@ dmypy.json
 .vscode/launch.json
 
 # config.yml
-config.yml
+config*.yml
 *cookies.txt
 out/

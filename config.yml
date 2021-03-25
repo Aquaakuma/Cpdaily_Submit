@@ -13,11 +13,11 @@ users:
       #password 密码
       password: ''
       #address 地址，定位信息
-      address: 中国福建省
+      address: addrexx
       #email 接受通知消息的邮箱
-      email: @qq.com
+      email: email@qq.com
       #school 学校全称
-      school: 大学
+      school: school
       lon: ''
       lat: ''
       photo: './photo.jpg'
