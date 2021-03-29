@@ -97,9 +97,9 @@ class Login(object):
 
     # 如果请求返回的数据非200 重试
     def retry_if_vaule_error(exception):
-        if isinstance(exception, BaseException):
+        if isinstance(exception, ValueError):
             logging.info("失败，重试中。。。")
-        return isinstance(exception, BaseException)
+        return isinstance(exception, ValueError)
 
     # 读取cookies
     def cookies_read(self):
@@ -129,7 +129,7 @@ class Login(object):
         logging.info(cookieStr)
         if cookieStr == "None":
             logging.info(res.json())
-            raise Exception("登录失败，原因可能是学号或密码错误，请检查配置后，重启脚本。。。")
+            raise Exception(ValueError, "登录失败，原因可能是学号或密码错误，请检查配置后，重启脚本。。。")
 
         logging.info("登录成功。。。")
         # 解析cookie

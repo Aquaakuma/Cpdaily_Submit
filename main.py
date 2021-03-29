@@ -29,43 +29,59 @@ def main(config, generate, attendance, collector, mail_picture):
 
     if attendance:
         for user in config["users"]:
-            cpdaily = Attendance(
-                username=user["user"]["username"],
-                password=user["user"]["password"],
-                address=user["user"]["address"],
-                school=user["user"]["school"],
-                lon=user["user"]["lon"],
-                lat=user["user"]["lat"],
-                photo=user["user"]["photo"],
-                abnormalReason=user["user"]["abnormalReason"],
-            )
             try:
+                cpdaily = Attendance(
+                    username=user["user"]["username"],
+                    password=user["user"]["password"],
+                    address=user["user"]["address"],
+                    school=user["user"]["school"],
+                    lon=user["user"]["lon"],
+                    lat=user["user"]["lat"],
+                    photo=user["user"]["photo"],
+                    abnormalReason=user["user"]["abnormalReason"],
+                )
                 msg = cpdaily.getUnSignedTasks().getDetailTask().fillForm().signIn()
-                send.sendQmail(email=user["user"]["email"], title=msg, content="这是我老婆", picture=mail_picture)
+                send.sendQmail(
+                    email=user["user"]["email"],
+                    title=msg,
+                    content="这是我老婆",
+                    picture=mail_picture,
+                )
             except Exception as e:
                 logging.info(str(e))
                 send.sendQmail(
-                    email=user["user"]["email"], title=str(e), content="这是我老婆", picture=mail_picture
+                    email=user["user"]["email"],
+                    title=str(e),
+                    content="这是我老婆",
+                    picture=mail_picture,
                 )
                 pass
     elif collector:
         for user in config["users"]:
-            cpdaily = Collector(
-                username=user["user"]["username"],
-                password=user["user"]["password"],
-                address=user["user"]["address"],
-                lon=user["user"]["lon"],
-                lat=user["user"]["lat"],
-                school=user["user"]["school"],
-                photo=user["user"]["photo"],
-            )
             try:
+                cpdaily = Collector(
+                    username=user["user"]["username"],
+                    password=user["user"]["password"],
+                    address=user["user"]["address"],
+                    lon=user["user"]["lon"],
+                    lat=user["user"]["lat"],
+                    school=user["user"]["school"],
+                    photo=user["user"]["photo"],
+                )
                 msg = cpdaily.queryForm().fillForm(config["cpdaily"]).submitForm()
-                send.sendQmail(email=user["user"]["email"], title=msg, content="这是我老婆", picture=mail_picture)
+                send.sendQmail(
+                    email=user["user"]["email"],
+                    title=msg,
+                    content="这是我老婆",
+                    picture=mail_picture,
+                )
             except Exception as e:
                 logging.info(str(e))
                 send.sendQmail(
-                    email=user["user"]["email"], title=str(e), content="这是我老婆", picture=mail_picture
+                    email=user["user"]["email"],
+                    title=str(e),
+                    content="这是我老婆",
+                    picture=mail_picture,
                 )
                 pass
     elif generate:
