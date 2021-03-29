@@ -14,7 +14,7 @@ from retrying import retry
 
 
 class Login(object):
-    api = "http://www.zimo.wiki:8080/wisedu-unified-login-api-v1.0/api/login"
+    api = "http://api.aqualink.top/wisedu-unified-login-api-v1.0/api/login"
 
     logging.basicConfig(
         format="%(asctime)s  %(filename)s : %(levelname)s  %(message)s",
