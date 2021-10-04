@@ -18,7 +18,7 @@
 #   submit_user1:
 
 #     runs-on: ubuntu-latest
-#     environment: TUT # 此处填入环境名
+#     environment: dailystuday # 此处填入环境名
 #     # 使用action运行本地api服务时打开
 #     # services:
 #     #   # Label used to access the service container
